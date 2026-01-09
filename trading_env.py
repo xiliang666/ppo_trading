@@ -28,9 +28,11 @@ class AShareTradingEnv(gym.Env):
         )
 
     def reset(self, seed=None, options=None):
+        super().reset(seed=seed)
         self.idx = 0
-        self.equity_curve = []
+        self.equity_curve = [1.0]  # 明确初始净值
         return self._get_obs(), {}
+
 
     def _get_obs(self):
         date = self.dates[self.idx]
@@ -98,4 +100,8 @@ class AShareTradingEnv(gym.Env):
         self.idx += 1
         done = self.idx >= len(self.dates) - 1
 
-        return self._get_obs(), reward, done, False, {}
+        return self._get_obs(), reward, done, False, {
+        "equity": equity,
+        "daily_return": daily_ret
+        }
+
